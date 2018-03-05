@@ -4,3 +4,4 @@ import time
 
 print(pynput.mouse.Controller().position)
 print(time.time())
+
