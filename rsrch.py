@@ -22,6 +22,7 @@ mData=[]
 lclick=0
 rclick=0
 iloop=1
+charc=0
 def on_click(x, y, button, pressed):
     global lclick
     global rclick
@@ -81,10 +82,19 @@ def recMousPos():
 
 
 def on_press(key):
+    global charc
     print("press:" ,key)
+    if isinstance(key,pynput.keyboard._win32.KeyCode):
+        charc+=1
+        print(charc)
+    
 
 def on_release(key):
     global iloop
+    global charc
+    if isinstance(key,pynput.keyboard._win32.KeyCode):
+        charc-=1
+        print(charc)
     print("release:",key)
     if key == Key.esc:
         global mlistener

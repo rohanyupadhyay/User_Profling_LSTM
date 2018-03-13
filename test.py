@@ -18,19 +18,11 @@ def on_release(key):
         return False
 
 
-a=[]
-a.append([1, 2,4, None])
-a.append([2, 3,5, None])
-a.append([3, 4, 6, None])
-
-if a[-1] == [3, 4, 6, None]:
-    print ("Yes")
 
 f=open("data.txt","r")
 
 #l=ast.literal_eval(f.read())
 #print(l[0])
 
-print(Key.down)
 
 
