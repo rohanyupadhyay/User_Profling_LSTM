@@ -24,5 +24,14 @@ f=open("data.txt","r")
 #l=ast.literal_eval(f.read())
 #print(l[0])
 
+a={}
+b={}
 
+a['a']=1
+a['2']=2
+a['3']=3
 
+b['3']=3
+b['2']=2
+
+print(b==a)

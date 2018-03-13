@@ -17,33 +17,50 @@ import time
 
 f=open("data.txt","a")
 
-mData=[]
-    
-lclick=0
-rclick=0
+mData={}
+tempData={}
+
+mData['charc']=0
+mData['lClick']=0
+mData['rClick']=0
+mData['mClick']=0
+mData['absTime']=time.time()
+mData['space']=0
+mData['backSpace']=0
+mData['delete']=0
+mData['ctrl']=0
+mData['alt']=0
+mData['capsLock']=0
+mData['shift']=0
+mData['tab']=0
+mData['numLock']=0
+mData['enter']=0
+
 iloop=1
-charc=0
+
+charPrsd=[]
 def on_click(x, y, button, pressed):
-    global lclick
-    global rclick
     global iloop
-    global mData
-    print(button)
+    print (button)
     if pressed:
         if button==Button.left:
-            lclick=1
+            mData['lClick']+=1
         if button==Button.right:
-            rclick=1
+            mData['rClick']+=1
+        if button==Button.middle:
+            mData['mClick']+=1
     if not pressed:
         if button==Button.left:
-            lclick=0
+            mData['lClick']-=1
         if button==Button.right:
-            rclick=0
-    if len(mData)==0:
-        mData.append([time.time(),pynput.mouse.Controller().position[0],pynput.mouse.Controller().position[1],lclick,rclick,None,None])
-    else:
-        if mData[-1]!=[time.time(),pynput.mouse.Controller().position[0],pynput.mouse.Controller().position[1],lclick,rclick,None,None]:
-            mData.append([time.time(),pynput.mouse.Controller().position[0],pynput.mouse.Controller().position[1],lclick,rclick,None,None])
+            mData['rClick']-=1
+        if button==Button.middle:
+            mData['mClick']-=1
+    print(mData['lClick'],mData['mClick'],mData['rClick'])
+    mData['absTime']=time.time()
+
+
+
     if iloop==0:
         return False
 
@@ -72,29 +89,26 @@ def recMousPos():
     global iloop
     global mData
     while iloop:
-        if len (mData)==0:
-            mData.append([time.time(),pynput.mouse.Controller().position[0],pynput.mouse.Controller().position[1],lclick,rclick,None,None])
-        else:
-            if mData[-1] != [time.time(),pynput.mouse.Controller().position[0],pynput.mouse.Controller().position[1],lclick,rclick,None,None]:  
-                mData.append([time.time(),pynput.mouse.Controller().position[0],pynput.mouse.Controller().position[1],lclick,rclick,None,None])
+        pass
         #print(time.time(),pynput.mouse.Controller().position[0],pynput.mouse.Controller().position[1],lclick,rclick,None,None)
     return False
 
 
 def on_press(key):
-    global charc
     print("press:" ,key)
-    if isinstance(key,pynput.keyboard._win32.KeyCode):
-        charc+=1
-        print(charc)
+    if isinstance(key,pynput.keyboard._win32.KeyCode) and key not in charPrsd:
+        charPrsd.append(key)
+        mData['charc']+=1
+        print(mData['charc'])
     
 
 def on_release(key):
     global iloop
     global charc
     if isinstance(key,pynput.keyboard._win32.KeyCode):
-        charc-=1
-        print(charc)
+        charPrsd.remove(key)
+        mData['charc']-=1
+        print(mData['charc'])
     print("release:",key)
     if key == Key.esc:
         global mlistener
