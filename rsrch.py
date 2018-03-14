@@ -95,13 +95,27 @@ def on_scroll(x, y, dx, dy):
     if iloop==0:
         return False
 
+def on_move(x,y):
+    global iloop
+    mData['mouseX']=x
+    mData['mouseY']=y
+    mData['sTime']=time.time()-stime
+    print(x,y)
+    f.write(str(mData))
+    f.write("\n")
+    if iloop==0:
+        return False
+
+
+
 
 def recMousList():
     global mlistener
     # Collect events until released
     with mouse.Listener(
             on_click=on_click,
-            on_scroll=on_scroll) as mlistener:
+            on_scroll=on_scroll,
+            on_move=on_move) as mlistener:
         mlistener.join()
 
 
@@ -109,10 +123,10 @@ def recMousPos():
     global iloop
     while iloop:
         tempData=mData.copy()
-        mData['sTime']=time.time()-stime
         mData['mouseX']=pynput.mouse.Controller().position[0]
         mData['mouseY']=pynput.mouse.Controller().position[1]
         if tempData!=mData:
+            mData['sTime']=time.time()-stime
             f.write(str(mData))
             f.write("\n")
         
@@ -271,16 +285,16 @@ def recKeybPress():
 
 
 t0=threading.Thread(target=recMousList,args=())
-t1=threading.Thread(target=recMousPos,args=())
-t2=threading.Thread(target=recKeybPress,args=())
+t1=threading.Thread(target=recKeybPress,args=())
+#t2=threading.Thread(target=recMousPos,args=())
 t0.start()
 t1.start()
-t2.start()
+#t2.start()
 
 
 Thread.join(t0)
 Thread.join(t1)
-Thread.join(t2)
+#Thread.join(t2)
 
 
 

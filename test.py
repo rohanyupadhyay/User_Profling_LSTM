@@ -21,21 +21,11 @@ def on_release(key):
 
 f=open("data.txt","r")
 
-#l=ast.literal_eval(f.read())
+l=f.readline()
+l=ast.literal_eval(l)
+print(l['sTime'])
+print(len(l))
 #print(l[0])
 
-a={}
-b={}
 
-a['a']=1
-a['2']=2
-a['3']=3
-
-
-b=a.copy()
-
-b['3']=3
-b['2']=4
-
-print(b,a)
 
