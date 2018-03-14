@@ -5,6 +5,7 @@ import time
 from pynput import keyboard
 from pynput.keyboard import Key, Listener
 import ast
+import os
 
 print(pynput.mouse.Controller().position[0])
 print(time.time())
@@ -29,3 +30,4 @@ print(len(l))
 
 
 
+print(os.environ['USERNAME'])

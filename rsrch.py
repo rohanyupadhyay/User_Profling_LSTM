@@ -20,6 +20,7 @@ f=open("data.txt","a")
 stime=time.time()
 mData={}
 tempData={}
+mData['user']=os.environ['USERNAME']
 
 mData['charc']=0
 mData['lClick']=0
