@@ -201,7 +201,6 @@ def on_press(key):
 
 def on_release(key):
     global iloop
-    global charc
     global stime
     mData['mouseX']=pynput.mouse.Controller().position[0]
     mData['mouseY']=pynput.mouse.Controller().position[1]
