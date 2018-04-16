@@ -3,14 +3,14 @@ from tensorflow.contrib import rnn
 import numpy as np
 
 learning_rate = 0.001
-training_steps = 1000
+training_steps = 5000
 batch_size = 20
 display_step = 1
 
-num_input = 1 # MNIST data input (img shape: 28*28)
+num_input = 1 # number of features
 timesteps = 10 # timesteps
-num_hidden = 10 # hidden layer num of features
-num_classes = 2 # MNIST total classes (0-9 digits)
+num_hidden = 10 # hidden layer
+num_classes = 2 #output classes (0-9 digits)
 
 X = tf.placeholder("float", [None, timesteps, num_input])
 Y = tf.placeholder("float", [None, num_classes])
@@ -74,7 +74,7 @@ with tf.Session() as sess:
 
     print("Optimization Finished!")
     test_len=10
-    test_data=list(range(51,61,1))
+    test_data=list(range(55,75,2))
     test_data=np.reshape(test_data,(1,timesteps,num_input))
     print(sess.run(logits, feed_dict={X: test_data}))
     
