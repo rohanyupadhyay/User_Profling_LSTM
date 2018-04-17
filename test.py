@@ -20,18 +20,20 @@ def on_release(key):
 
 
 
-#f=open("data.txt","r")
+f=open("data.txt","r")
 
-#l=f.readline()
-#l=ast.literal_eval(l)
+l=f.readline()
+l=ast.literal_eval(l)
 #print(l['sTime'])
-#print(len(l))
+print(len(l))
+lis=list(l.values())
+print(lis)
 #print(l[0])
 
 
 
 #print(os.environ['USERNAME'])
-
+'''
 newx=list(range(1,11,1))
 print(newx)
 
@@ -40,3 +42,4 @@ def square(lst):
 
 newy=square(newx)
 print(newy)
+'''
