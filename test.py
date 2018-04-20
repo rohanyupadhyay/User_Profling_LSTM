@@ -6,6 +6,7 @@ from pynput import keyboard
 from pynput.keyboard import Key, Listener
 import ast
 import os
+import numpy as np
 
 print(pynput.mouse.Controller().position[0])
 print(time.time())
@@ -43,3 +44,12 @@ def square(lst):
 newy=square(newx)
 print(newy)
 '''
+
+tempx=list(range(1,4))
+x=[]
+for i in range(1):
+    x.extend(tempx[i:i+3])
+x=np.reshape(x,(1,3,1))
+
+
+

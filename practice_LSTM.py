@@ -3,7 +3,7 @@ from tensorflow.contrib import rnn
 import numpy as np
 
 learning_rate = 0.001
-training_steps = 5000
+training_steps = 10
 batch_size = 20
 display_step = 1
 
@@ -48,13 +48,13 @@ with tf.Session() as sess:
     batch_x1=list(range(1,101))#.append(range(101,301,2))
     batch_x2=list(range(1,201,2))
     batch_x=batch_x1+batch_x2
-    print(batch_x)
+    #print(batch_x)
     batch_y=[]
     for i in range (10):
         batch_y.append([1,0])
     for i in range (10):
         batch_y.append([0,1])
-    print(batch_y)
+    #print(batch_y)
 
     #print(batch_y)
     batch_x=np.reshape(batch_x,(batch_size,timesteps,num_input))
