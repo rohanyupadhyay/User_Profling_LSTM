@@ -15,9 +15,11 @@ import time
 #os.system("tasklist")   
 #print(win32gui.GetDoubleClickTime())
 i=1
-while os.path.exists(os.environ['USERNAME']+"_data_"+str(i)+".txt"):
+if not os.path.exists(os.path.dirname(r"data_"+os.environ['USERNAME']+r"/")):
+    os.makedirs(os.path.dirname(r"data_"+os.environ['USERNAME']+r"/"))
+while os.path.exists(r"data_"+os.environ['USERNAME']+r"/"+os.environ['USERNAME']+"_data_"+str(i)+".txt"):
     i+=1
-f=open(os.environ['USERNAME']+"_data_"+str(i)+".txt","a")
+f=open(r"data_"+os.environ['USERNAME']+r"/"+os.environ['USERNAME']+"_data_"+str(i)+".txt","a")
 
 stime=time.time()
 ltime=0
@@ -56,18 +58,18 @@ def on_click(x, y, button, pressed):
     print (button)
     if pressed:
         if button==Button.left:
-            mData['lClick']+=1
+            mData['lClick']=1
         if button==Button.right:
-            mData['rClick']+=1
+            mData['rClick']=1
         if button==Button.middle:
-            mData['mClick']+=1
+            mData['mClick']=1
     if not pressed:
         if button==Button.left:
-            mData['lClick']-=1
+            mData['lClick']=0
         if button==Button.right:
-            mData['rClick']-=1
+            mData['rClick']=0
         if button==Button.middle:
-            mData['mClick']-=1
+            mData['mClick']=0
     print(mData['lClick'],mData['mClick'],mData['rClick'])
     mData['mouseX']=pynput.mouse.Controller().position[0]
     mData['mouseY']=pynput.mouse.Controller().position[1]
