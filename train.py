@@ -2,96 +2,90 @@ import tensorflow as tf
 from tensorflow.contrib import rnn
 import numpy as np
 
-learning_rate = 0.001
-training_steps = 5000
-batch_size = 150
+learning_rate = 0.0001
+training_steps = 1
+batch_size = 10
 display_step = 1
 
 num_input = 1 # number of features
-timesteps = 3 # timesteps
-num_hidden1 = 50 # hidden layer 1
-num_hidden2= 10 # hidden layer 2
+timesteps = 2 # timesteps
+num_hidden = 1 # hidden layer 1
 num_classes = 1 #output classes (0-9 digits)
 
 
 
-trainX=tf.placeholder("float",[None,timesteps,num_input])
-trainY=tf.placeholder("float",[None,num_classes])
+X=tf.placeholder("float",[None,timesteps,num_input])
+Y=tf.placeholder("float",[None,num_classes])
 
 
 weights = {
-    'out': tf.Variable(tf.random_normal([num_hidden1, num_classes]))
+    'out': tf.Variable(tf.random_normal([num_hidden, num_classes]))
 }
 biases = {
     'out': tf.Variable(tf.random_normal([num_classes]))
 }
 
+layer = rnn.BasicLSTMCell(num_hidden,forget_bias=1.0)
+cell = rnn.MultiRNNCell([rnn.BasicLSTMCell(num_hidden) for _ in range(2)])
+#x=tf.unstack(X,axis=1)
 
-X=tf.placeholder("float",[None,num_input])
-Y=tf.placeholder("float",[None,num_classes])
-lstm_cell = rnn.BasicLSTMCell(num_hidden1,forget_bias=1.0)
-#state=hidden_state,current_state
-state=lstm_cell.zero_state(batch_size,dtype=tf.float32)
-#X=tf.unstack(X, timesteps, 1)
+output,state=tf.nn.dynamic_rnn(cell,X,dtype=tf.float32)
 
+prediction=tf.matmul(output[:,-1],weights['out']) +biases['out']
 
-#logits=tf.matmul(output,weights)+biases
-trainState=lstm_cell.zero_state(batch_size,dtype=tf.float32)
+cost=tf.reduce_mean(tf.squared_difference(prediction,Y))
+optimizer=tf.train.AdamOptimizer()
+train=optimizer.minimize(cost)
 
+saver=tf.train.Saver()
 
-
-tmp=[]
-for i in range(timesteps):
-    trainOutput,trainState=lstm_cell(trainX[:,i,:],trainState)
-finalOutput=trainOutput
-
-logits=tf.matmul(finalOutput,weights['out'])+biases['out']
-
-loss=tf.reduce_mean(tf.squared_difference(logits,trainY))
-
-optimizer=tf.train.AdamOptimizer(learning_rate=learning_rate)
-
-train_op=optimizer.minimize(loss)
-
-saver =tf.train.Saver()
-
-init=tf.global_variables_initializer()
-
+init = tf.global_variables_initializer()
 
 with tf.Session() as sess:
     sess.run(init)
-    
-    tempx=list(range(1,153))
+
+    saver.restore(sess,"D:/Rohan/here.ckpt")
+
+    tempx1=list(range(1,1002))
     x=[]
-    for i in range(150):
-        x.extend(tempx[i:i+3])
-    x=np.reshape(x,(batch_size,timesteps,num_input))
-    #print(x)
-    y=list(range(4,154))
-    y=np.reshape(y,(batch_size,num_classes))
+    for i in range(1000):
+        x.extend(tempx1[i:i+2])
+    tempx2=list(range(1,2003))
+    for i in range(1000):
+        x.extend(tempx2[i:i+3:2])
+    print(x)
+    x=np.reshape(x,(2000,timesteps,num_input))
+    print(x)
+
+    y=list(range(3,1003))
+    y.extend(list(range(5,1005)))
+    y=np.reshape(y,(2000,num_input))
+    
     #print(y)
-    #print(x[:,1,:])
 
-    ans=sess.run(logits, feed_dict={trainX:x,trainY:y})
-    print(ans)
-    print()
-    for i in range(training_steps):
-        sess.run(train_op, feed_dict={trainX:x,trainY:y})
+    print(sess.run(output, feed_dict={X: x,Y:y}))
+    i=0
+    while sess.run(cost, feed_dict={X: x,Y:y})>0.001:
+        sess.run(train, feed_dict={X: x,Y:y})
+        i+=1
+        print(i+1,format(sess.run(cost, feed_dict={X: x,Y:y})))
         if i%1000==0:
-            saver.save(sess,"D:\Rohan\here")
+            saver.save(sess,"D:/Rohan/here.ckpt")
         
-    saver.save(sess,"D:\Rohan\here")
 
-    #tf.saved_model.simple_save(sess,'D:\Rohan\here1',inputs={"trainX":trainX},outputs={"logits":logits},)
-
-
+    saver.save(sess,"D:/Rohan/here.ckpt")
     
-    tempx=list(range(1,153))
+    tempx=list(range(1,13))
     x=[]
-    for i in range(150):
+    for i in range(10):
         x.extend(tempx[i:i+3])
-    x=np.reshape(x,(150,timesteps,num_input))
 
-    ans=sess.run(logits, feed_dict={trainX:x})
-    print(ans)
-   
+    tempx=list(range(1,17,2))
+    for i in range(10):
+        x.extend(tempx[i:i+3])
+    x=np.reshape(x,(20,timesteps,num_input))
+    print(x)
+    print()
+    ans=sess.run(output, feed_dict={X: x})
+    print(sess.run(prediction, feed_dict={X: x}))
+    

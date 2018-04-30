@@ -14,10 +14,13 @@ import time
 
 #os.system("tasklist")   
 #print(win32gui.GetDoubleClickTime())
-
-f=open("data.txt","a")
+i=1
+while os.path.exists(os.environ['USERNAME']+"_data_"+str(i)+".txt"):
+    i+=1
+f=open(os.environ['USERNAME']+"_data_"+str(i)+".txt","a")
 
 stime=time.time()
+ltime=0
 mData={}
 tempData={}
 mData['user']=os.environ['USERNAME']
@@ -41,11 +44,13 @@ mData['mouseX']=pynput.mouse.Controller().position[0]
 mData['mouseY']=pynput.mouse.Controller().position[1]
 mData['scrollX']=0
 mData['scrollY']=0
+mData['timeDiff']=0
 
 iloop=1
 
-charPrsd=[]
+keyPrsd=[]
 def on_click(x, y, button, pressed):
+    global ltime
     global stime
     global iloop
     print (button)
@@ -67,6 +72,11 @@ def on_click(x, y, button, pressed):
     mData['mouseX']=pynput.mouse.Controller().position[0]
     mData['mouseY']=pynput.mouse.Controller().position[1]
     mData['sTime']=time.time()-stime
+    if ltime==0:
+        mData['timeDiff']=0
+    else:
+        mData['timeDiff']=time.time()-ltime
+    ltime=time.time()
     f.write(str(mData))
     f.write("\n")
 
@@ -80,10 +90,16 @@ def on_click(x, y, button, pressed):
 def on_scroll(x, y, dx, dy):
     global stime
     global iloop
+    global ltime
     print('Scrolled {0}'.format(
         (x, y)))
     print(dx,dy)
     mData['sTime']=time.time()-stime
+    if ltime==0:
+        mData['timeDiff']=0
+    else:
+        mData['timeDiff']=time.time()-ltime
+    ltime=time.time()
     mData['scrollX']=dx
     mData['scrollY']=dy
     mData['mouseX']=x
@@ -98,9 +114,15 @@ def on_scroll(x, y, dx, dy):
 
 def on_move(x,y):
     global iloop
+    global ltime
     mData['mouseX']=x
     mData['mouseY']=y
     mData['sTime']=time.time()-stime
+    if ltime==0:
+        mData['timeDiff']=0
+    else:
+        mData['timeDiff']=time.time()-ltime
+    ltime=time.time()
     print(x,y)
     f.write(str(mData))
     f.write("\n")
@@ -122,12 +144,19 @@ def recMousList():
 
 def recMousPos():
     global iloop
+    global stime
+    global ltime
     while iloop:
         tempData=mData.copy()
         mData['mouseX']=pynput.mouse.Controller().position[0]
         mData['mouseY']=pynput.mouse.Controller().position[1]
         if tempData!=mData:
             mData['sTime']=time.time()-stime
+            if ltime==0:
+                mData['timeDiff']=0
+            else:
+                mData['timeDiff']=time.time()-ltime
+            ltime=time.time()            
             f.write(str(mData))
             f.write("\n")
         
@@ -136,84 +165,109 @@ def recMousPos():
 
 def on_press(key):
     global stime
-    print("press:" ,key)
-    mData['mouseX']=pynput.mouse.Controller().position[0]
-    mData['mouseY']=pynput.mouse.Controller().position[1]
-    mData['sTime']=time.time()-stime
-    if isinstance(key,pynput.keyboard._win32.KeyCode) and key not in charPrsd:
-        charPrsd.append(key)
+    global ltime
+
+    if isinstance(key,pynput.keyboard._win32.KeyCode) and key not in keyPrsd:
+        print("press:" ,key)
+        mData['mouseX']=pynput.mouse.Controller().position[0]
+        mData['mouseY']=pynput.mouse.Controller().position[1]
+        mData['sTime']=time.time()-stime
+        if ltime==0:
+            mData['timeDiff']=0
+        else:
+            mData['timeDiff']=time.time()-ltime
+        ltime=time.time()
+        keyPrsd.append(key)
         mData['charc']+=1
         f.write(str(mData))
         f.write("\n")
         print(mData['charc'])
     else:
-        if key==Key.space:
-            mData['space']=1
-            print(mData['space'])
-            f.write(str(mData))
-            f.write("\n")
-        if key==Key.backspace:
-            mData['backSpace']=1
-            print(mData['backSpace'])
-            f.write(str(mData))
-            f.write("\n")
-        if key==Key.delete:
-            mData['delete']=1
-            print(mData['delete'])
-            f.write(str(mData))
-            f.write("\n")
-        if key==Key.ctrl or key==Key.ctrl_l or key==Key.ctrl_r:
-            mData['ctrl']=1
-            print(mData['ctrl'])
-            f.write(str(mData))
-            f.write("\n")
-        if key==Key.alt or key==Key.alt_l or key==Key.alt_r:
-            mData['alt']=1
-            print(mData['alt'])
-            f.write(str(mData))
-            f.write("\n")
-        if key==Key.caps_lock:
-            mData['capsLock']=1
-            print(mData['capsLock'])
-            f.write(str(mData))
-            f.write("\n")
-        if key==Key.shift or key==Key.shift_l or key==Key.shift_r:
-            mData['shift']=1
-            print(mData['shift'])
-            f.write(str(mData))
-            f.write("\n")
-        if key==Key.tab:
-            mData['tab']=1
-            print(mData['tab'])
-            f.write(str(mData))
-            f.write("\n")
-        if key==Key.num_lock:
-            mData['numLock']=1
-            print(mData['numLock'])
-            f.write(str(mData))
-            f.write("\n")
-        if key==Key.enter:
-            mData['enter']=1
-            print(mData['enter'])
-            f.write(str(mData))
-            f.write("\n")
+        if key not in keyPrsd:
+            print("press:" ,key)
+            mData['mouseX']=pynput.mouse.Controller().position[0]
+            mData['mouseY']=pynput.mouse.Controller().position[1]
+            mData['sTime']=time.time()-stime
+            if ltime==0:
+                mData['timeDiff']=0
+            else:
+                mData['timeDiff']=time.time()-ltime
+            ltime=time.time()
+            keyPrsd.append(key)
+            if key==Key.space:
+                mData['space']=1
+                print(mData['space'])
+                f.write(str(mData))
+                f.write("\n")
+            if key==Key.backspace:
+                mData['backSpace']=1
+                print(mData['backSpace'])
+                f.write(str(mData))
+                f.write("\n")
+            if key==Key.delete:
+                mData['delete']=1
+                print(mData['delete'])
+                f.write(str(mData))
+                f.write("\n")
+            if key==Key.ctrl or key==Key.ctrl_l or key==Key.ctrl_r:
+                mData['ctrl']=1
+                print(mData['ctrl'])
+                f.write(str(mData))
+                f.write("\n")
+            if key==Key.alt or key==Key.alt_l or key==Key.alt_r:
+                mData['alt']=1
+                print(mData['alt'])
+                f.write(str(mData))
+                f.write("\n")
+            if key==Key.caps_lock:
+                mData['capsLock']=1
+                print(mData['capsLock'])
+                f.write(str(mData))
+                f.write("\n")
+            if key==Key.shift or key==Key.shift_l or key==Key.shift_r:
+                mData['shift']=1
+                print(mData['shift'])
+                f.write(str(mData))
+                f.write("\n")
+            if key==Key.tab:
+                mData['tab']=1
+                print(mData['tab'])
+                f.write(str(mData))
+                f.write("\n")
+            if key==Key.num_lock:
+                mData['numLock']=1
+                print(mData['numLock'])
+                f.write(str(mData))
+                f.write("\n")
+            if key==Key.enter:
+                mData['enter']=1
+                print(mData['enter'])
+                f.write(str(mData))
+                f.write("\n")
     
         
 
 def on_release(key):
     global iloop
     global stime
+    global ltime
     mData['mouseX']=pynput.mouse.Controller().position[0]
     mData['mouseY']=pynput.mouse.Controller().position[1]
     mData['sTime']=time.time()-stime
+    if ltime==0:
+        mData['timeDiff']=0
+    else:
+        mData['timeDiff']=time.time()-ltime
+    ltime=time.time()
     print("release:",key)
     if isinstance(key,pynput.keyboard._win32.KeyCode):
-        charPrsd.remove(key)     
+        keyPrsd.remove(key)     
         mData['charc']-=1
         f.write(str(mData))
         f.write("\n")
         print(mData['charc'])
     else:
+        keyPrsd.remove(key)
         if key==Key.space:
             mData['space']=0
             print(mData['space'])

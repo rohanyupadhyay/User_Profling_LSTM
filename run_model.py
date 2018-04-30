@@ -2,75 +2,60 @@ import tensorflow as tf
 from tensorflow.contrib import rnn
 import numpy as np
 
-learning_rate = 0.001
-training_steps = 500
-batch_size = 150
+learning_rate = 0.0001
+training_steps = 1000
+batch_size = 10
 display_step = 1
 
 num_input = 1 # number of features
-timesteps = 3 # timesteps
-num_hidden1 = 50 # hidden layer 1
-num_hidden2= 10 # hidden layer 2
+timesteps = 2 # timesteps
+num_hidden = 1 # hidden layer 1
 num_classes = 1 #output classes (0-9 digits)
 
 
 
-trainX=tf.placeholder("float",[None,timesteps,num_input])
-trainY=tf.placeholder("float",[None,num_classes])
+X=tf.placeholder("float",[None,timesteps,num_input])
+Y=tf.placeholder("float",[None,num_classes])
 
 
 weights = {
-    'out': tf.Variable(tf.random_normal([num_hidden1, num_classes]))
+    'out': tf.Variable(tf.random_normal([num_hidden, num_classes]))
 }
 biases = {
     'out': tf.Variable(tf.random_normal([num_classes]))
 }
 
+layer = rnn.BasicLSTMCell(num_hidden,forget_bias=1.0)
+cell = rnn.MultiRNNCell([rnn.BasicLSTMCell(num_hidden) for _ in range(2)])
+x=tf.unstack(X,axis=1)
 
-X=tf.placeholder("float",[None,num_input])
-Y=tf.placeholder("float",[None,num_classes])
-lstm_cell = rnn.BasicLSTMCell(num_hidden1,forget_bias=1.0)
-#state=hidden_state,current_state
-state=lstm_cell.zero_state(batch_size,dtype=tf.float32)
-#X=tf.unstack(X, timesteps, 1)
+output,state=tf.nn.dynamic_rnn(cell,X,dtype=tf.float32)
 
+prediction=tf.matmul(output[:,-1],weights['out']) +biases['out']
 
-#logits=tf.matmul(output,weights)+biases
-trainState=lstm_cell.zero_state(batch_size,dtype=tf.float32)
-
-
-
-tmp=[]
-for i in range(timesteps):
-    trainOutput,trainState=lstm_cell(trainX[:,i,:],trainState)
-finalOutput=trainOutput
-
-logits=tf.matmul(finalOutput,weights['out'])+biases['out']
-
-loss=tf.reduce_mean(tf.squared_difference(logits,trainY))
-
+cost=tf.reduce_mean(tf.squared_difference(prediction,Y))
 optimizer=tf.train.AdamOptimizer(learning_rate=learning_rate)
+train=optimizer.minimize(cost)
 
-train_op=optimizer.minimize(loss)
+saver=tf.train.Saver()
 
-saver =tf.train.Saver()
-
-init=tf.global_variables_initializer()
-
+init = tf.global_variables_initializer()
 
 with tf.Session() as sess:
     sess.run(init)
-    
-    saver.restore(sess,"D:/Rohan/here")
 
+    saver.restore(sess,"D:/Rohan/here.ckpt")
 
-    
-    tempx=list(range(1,153))
+  
+    tempx1=list(range(1,1002))
     x=[]
-    for i in range(150):
-        x.extend(tempx[i:i+3])
-    x=np.reshape(x,(150,timesteps,num_input))
-
-    ans=sess.run(logits, feed_dict={trainX:x})
-    print(ans)
-   
+    for i in range(1000):
+        x.extend(tempx1[i:i+2])
+    tempx2=list(range(1,2003))
+    for i in range(1000):
+        x.extend(tempx2[i:i+3:2])
+    print(x)
+    x=np.reshape(x,(2000,timesteps,num_input))
+    ans=sess.run(prediction, feed_dict={X: x})
+    for i in ans:
+        print(i)
