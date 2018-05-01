@@ -15,11 +15,11 @@ import time
 #os.system("tasklist")   
 #print(win32gui.GetDoubleClickTime())
 i=1
-if not os.path.exists(os.path.dirname(r"data_"+os.environ['USERNAME']+r"/")):
-    os.makedirs(os.path.dirname(r"data_"+os.environ['USERNAME']+r"/"))
-while os.path.exists(r"data_"+os.environ['USERNAME']+r"/"+os.environ['USERNAME']+"_data_"+str(i)+".txt"):
+if not os.path.exists(os.path.dirname(r"data/")):
+    os.makedirs(os.path.dirname(r"data/"))
+while os.path.exists(r"data/"+os.environ['USERNAME']+"_data_"+str(i)+".txt"):
     i+=1
-f=open(r"data_"+os.environ['USERNAME']+r"/"+os.environ['USERNAME']+"_data_"+str(i)+".txt","a")
+f=open(r"data/"+os.environ['USERNAME']+"_data_"+str(i)+".txt","a")
 
 stime=time.time()
 ltime=0
