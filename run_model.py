@@ -1,16 +1,26 @@
 import tensorflow as tf
 from tensorflow.contrib import rnn
 import numpy as np
+import ast
+
+f1=open('final/pp_in.txt','r')
+f2=open('final/pp_out.txt','r')
+x=f1.readline()
+x=ast.literal_eval(x)
+y=f2.readline()
+y=ast.literal_eval(y)
+
+
 
 learning_rate = 0.0001
-training_steps = 1000
-batch_size = 10
+training_steps = 1
 display_step = 1
 
-num_input = 1 # number of features
-timesteps = 2 # timesteps
-num_hidden = 1 # hidden layer 1
-num_classes = 1 #output classes (0-9 digits)
+num_input = 19 # number of features
+timesteps = 250 # timesteps
+num_hidden = 100 # hidden layer 1
+num_classes = len(y[0]) #output classes
+
 
 
 
@@ -27,14 +37,14 @@ biases = {
 
 layer = rnn.BasicLSTMCell(num_hidden,forget_bias=1.0)
 cell = rnn.MultiRNNCell([rnn.BasicLSTMCell(num_hidden) for _ in range(2)])
-x=tf.unstack(X,axis=1)
+#x=tf.unstack(X,axis=1)
 
 output,state=tf.nn.dynamic_rnn(cell,X,dtype=tf.float32)
 
 prediction=tf.matmul(output[:,-1],weights['out']) +biases['out']
-
+accuracy=tf.sigmoid(1/tf.reduce_mean(tf.matmul(tf.abs(prediction-Y),[[1.0],[1.0],[1.0],[1.0]])))
 cost=tf.reduce_mean(tf.squared_difference(prediction,Y))
-optimizer=tf.train.AdamOptimizer(learning_rate=learning_rate)
+optimizer=tf.train.AdamOptimizer()
 train=optimizer.minimize(cost)
 
 saver=tf.train.Saver()
@@ -46,16 +56,10 @@ with tf.Session() as sess:
 
     saver.restore(sess,"D:/Rohan/here.ckpt")
 
-  
-    tempx1=list(range(1,1002))
-    x=[]
-    for i in range(1000):
-        x.extend(tempx1[i:i+2])
-    tempx2=list(range(1,2003))
-    for i in range(1000):
-        x.extend(tempx2[i:i+3:2])
-    print(x)
-    x=np.reshape(x,(2000,timesteps,num_input))
-    ans=sess.run(prediction, feed_dict={X: x})
-    for i in ans:
-        print(i)
+
+
+    
+    
+    ans=sess.run(output, feed_dict={X: x})
+    print(sess.run(prediction, feed_dict={X: x}))
+    

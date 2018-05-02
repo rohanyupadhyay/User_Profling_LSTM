@@ -20,15 +20,13 @@ def on_release(key):
         return False
 
 
+f2=open('final/pp_out.txt','r')
+y=f2.readline()
+y=ast.literal_eval(y)
+print(len(y[:]))
 
-f=open("data.txt","r")
-
-l=f.readline()
-l=ast.literal_eval(l)
-#print(l['sTime'])
-print(len(l))
-lis=list(l.values())
-print(lis)
+#lis=list(l.values())
+#print(lis)
 #print(l[0])
 
 
@@ -45,11 +43,6 @@ newy=square(newx)
 print(newy)
 '''
 
-tempx=list(range(1,4))
-x=[]
-for i in range(1):
-    x.extend(tempx[i:i+3])
-x=np.reshape(x,(1,3,1))
 
 
 
