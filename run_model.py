@@ -3,63 +3,30 @@ from tensorflow.contrib import rnn
 import numpy as np
 import ast
 
-f1=open('final/pp_in.txt','r')
-f2=open('final/pp_out.txt','r')
-x=f1.readline()
-x=ast.literal_eval(x)
-y=f2.readline()
-y=ast.literal_eval(y)
+f=open('final/pp_in.txt','r')
+inps=ast.literal_eval(f.readline())
+#print(inps)
 
 
 
-learning_rate = 0.0001
-training_steps = 1
-display_step = 1
+with tf.Session(graph=tf.Graph()) as sess:
+    tf.saved_model.loader.load(sess,[tf.saved_model.tag_constants.SERVING],"model/")
+    t_X=tf.get_default_graph().get_tensor_by_name('input:0')
+    t_prediction=tf.get_default_graph().get_tensor_by_name('prediction:0')
+    #print(tf.get_collection(tf.GraphKeys.key))
+    #print(sess.graph.get_collection('variables'))
+    print(sess.run(t_prediction,feed_dict={t_X:inps}))
 
-num_input = 19 # number of features
-timesteps = 250 # timesteps
-num_hidden = 100 # hidden layer 1
-num_classes = len(y[0]) #output classes
-
-
-
-
-X=tf.placeholder("float",[None,timesteps,num_input])
-Y=tf.placeholder("float",[None,num_classes])
+    
+    
 
 
-weights = {
-    'out': tf.Variable(tf.random_normal([num_hidden, num_classes]))
-}
-biases = {
-    'out': tf.Variable(tf.random_normal([num_classes]))
-}
 
-layer = rnn.BasicLSTMCell(num_hidden,forget_bias=1.0)
-cell = rnn.MultiRNNCell([rnn.BasicLSTMCell(num_hidden) for _ in range(2)])
-#x=tf.unstack(X,axis=1)
-
-output,state=tf.nn.dynamic_rnn(cell,X,dtype=tf.float32)
-
-prediction=tf.matmul(output[:,-1],weights['out']) +biases['out']
-accuracy=tf.sigmoid(1/tf.reduce_mean(tf.matmul(tf.abs(prediction-Y),[[1.0],[1.0],[1.0],[1.0]])))
-cost=tf.reduce_mean(tf.squared_difference(prediction,Y))
-optimizer=tf.train.AdamOptimizer()
-train=optimizer.minimize(cost)
-
-saver=tf.train.Saver()
-
-init = tf.global_variables_initializer()
-
-with tf.Session() as sess:
-    sess.run(init)
-
-    saver.restore(sess,"D:/Rohan/here.ckpt")
 
 
 
     
     
-    ans=sess.run(output, feed_dict={X: x})
-    print(sess.run(prediction, feed_dict={X: x}))
+    #ans=sess.run(output, feed_dict={X: x})
+    #print(sess.run(prediction, feed_dict={X: x}))
     
