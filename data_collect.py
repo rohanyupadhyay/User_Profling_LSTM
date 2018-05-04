@@ -9,7 +9,6 @@ from pynput.mouse import Button
 from pynput.keyboard import Key
 from pynput import keyboard
 import math
-import os
 import time
 
 #os.system("tasklist")   

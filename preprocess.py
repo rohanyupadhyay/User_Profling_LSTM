@@ -17,6 +17,8 @@ users=sorted(np.unique(users))
 
 pfi=open("final/pp_in.txt","a")
 pfo=open("final/pp_out.txt","a")
+pfu=open("final/users.txt","a")
+pfu.write(str(users))
 
 timesteps=250
 finalData=[]

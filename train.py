@@ -5,10 +5,13 @@ import ast
 
 f1=open('final/pp_in.txt','r')
 f2=open('final/pp_out.txt','r')
+f3=open('final/users.txt','r')
 x=f1.readline()
 x=ast.literal_eval(x)
 y=f2.readline()
 y=ast.literal_eval(y)
+users=ast.literal_eval(f3.readline())
+users=tf.identity(users,name="users")
 
 
 
@@ -59,7 +62,7 @@ with tf.Session() as sess:
 
 
     i=0
-    while sess.run(cost, feed_dict={X: x,Y:y})>0.1:
+    while sess.run(cost, feed_dict={X: x,Y:y})>0.2:
         sess.run(train, feed_dict={X: x,Y:y})
         i+=1
         print(i,format(sess.run(cost, feed_dict={X: x,Y:y})))
