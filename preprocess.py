@@ -14,15 +14,18 @@ for filename in os.listdir('data/'):
 users=sorted(np.unique(users))
 #print(users)
 #print(users.index('admin'))
-
-pfi=open("final/pp_in.txt","a")
-pfo=open("final/pp_out.txt","a")
+filei=1
+pfi=open("final/in/pp_in_"+str(filei)+".txt","a")
+pfo=open("final/out/pp_out_"+str(filei)+".txt","a")
 pfu=open("final/users.txt","a")
 pfu.write(str(users))
 
 timesteps=250
-finalData=[]
+finalIn=[]
 finalOut=[]
+
+
+count=0
 
 for filename in os.listdir('data/'):
     #print(filename)
@@ -44,13 +47,27 @@ for filename in os.listdir('data/'):
         #print(cOut)
         outS[users.index(cOut)]=1
         #print(outS)
-        finalData.append(tempFile[i:i+250])
+        finalIn.append(tempFile[i:i+250])
         finalOut.append(outS)
+        count+=1
+        if count==1024:
+            pfi.write(str(finalIn))
+            pfo.write(str(finalOut))
+            count=0
+            finalIn=[]
+            finalOut=[]
+            pfi.close()
+            pfo.close()
+            filei+=1
+            pfi=open("final/in/pp_in_"+str(filei)+".txt","a")
+            pfo=open("final/out/pp_out_"+str(filei)+".txt","a")
 
-#print(finalData)
+
+#print(finalIn)
 #print(finalOut)
-pfi.write(str(finalData))
-pfo.write(str(finalOut))
+if count!=0:
+    pfi.write(str(finalIn))
+    pfo.write(str(finalOut))
 
 
 
