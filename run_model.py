@@ -316,6 +316,8 @@ def recKeybPress():
         klistener.join()    
 
 
+
+
 def predictModel():
     global iloop
     #print("running")
@@ -324,6 +326,7 @@ def predictModel():
         t_X=tf.get_default_graph().get_tensor_by_name('input:0')
         t_prediction=tf.get_default_graph().get_tensor_by_name('prediction:0')
         t_users=tf.get_default_graph().get_tensor_by_name('users:0')
+        f_prediction=tf.nn.softmax(t_prediction)
         users_list=sess.run(t_users)
         for i in range(len(users_list)):
             users_list[i]=users_list[i].decode('utf-8')
@@ -337,7 +340,7 @@ def predictModel():
                 for i in range(len(range(250))):
                     tempcData[0].append(cData[0][i])
                 print(users_list)
-                print(sess.run(t_prediction,feed_dict={t_X:tempcData}))
+                print(sess.run(f_prediction,feed_dict={t_X:tempcData}))
                 print()
                 cData[0].pop(0)
 
