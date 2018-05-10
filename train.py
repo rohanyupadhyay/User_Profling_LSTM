@@ -17,12 +17,12 @@ users=tf.identity(users,name="users")
 
 
 #learning_rate = 0.0001
-training_steps = 10
+training_steps = 2
 display_step = 1
 
 num_input = 19 # number of features
 timesteps = 250 # timesteps
-num_hidden = 100 # hidden layer 1
+num_hidden = 50 # hidden layer 1
 
 
 
@@ -40,7 +40,7 @@ biases = {
 }
 
 layer = rnn.BasicLSTMCell(num_hidden,forget_bias=1.0)
-cell = rnn.MultiRNNCell([rnn.BasicLSTMCell(num_hidden) for _ in range(3)])
+cell = rnn.MultiRNNCell([rnn.BasicLSTMCell(num_hidden) for _ in range(1)])
 #x=tf.unstack(X,axis=1)
 
 output,state=tf.nn.dynamic_rnn(cell,X,dtype=tf.float32)
@@ -59,10 +59,9 @@ init = tf.global_variables_initializer()
 with tf.Session() as sess:
     sess.run(init)
 
-    #saver.restore(sess,"checkpoint/here.ckpt")
+    saver.restore(sess,"checkpoint/here.ckpt")
 
-
-    print(0,format(sess.run(accuracy, feed_dict={X: tx,Y:ty})))
+    print("0",format(sess.run(accuracy, feed_dict={X: tx,Y:ty})))
     for i in range(training_steps):
         for j in range(len(os.listdir('final/in'))):
             f1=open('final/in/pp_in_'+str(j+1)+'.txt','r')
@@ -73,7 +72,8 @@ with tf.Session() as sess:
             y=ast.literal_eval(y)
             for k in range(1):
                 sess.run(train, feed_dict={X: x,Y:y})
-        print(i+1,format(sess.run(accuracy, feed_dict={X: tx,Y:ty})))
+            print("Iteration:",j+1,format(sess.run(accuracy, feed_dict={X: x,Y:y})))
+        print("\n\n\nEpoch:",i+1,format(sess.run(accuracy, feed_dict={X: tx,Y:ty})),"\n")
         if i%1==0:
             saver.save(sess,"checkpoint/here.ckpt")
             #tf.saved_model.simple_save(sess,"model/",inputs={"X":X},outputs={"prediction":prediction})
@@ -82,5 +82,5 @@ with tf.Session() as sess:
     
     
     #ans=sess.run(output, feed_dict={X: x})
-    print(sess.run(prediction, feed_dict={X: x}))
+    print(sess.run(prediction, feed_dict={X: tx}))
     print(sess.run(accuracy, feed_dict={X: tx,Y:ty}))
