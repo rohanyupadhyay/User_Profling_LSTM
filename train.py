@@ -76,7 +76,6 @@ with tf.Session() as sess:
         print("\n\n\nEpoch:",i+1,format(sess.run(accuracy, feed_dict={X: tx,Y:ty})),"\n")
         if i%1==0:
             saver.save(sess,"checkpoint/here.ckpt")
-            #tf.saved_model.simple_save(sess,"model/",inputs={"X":X},outputs={"prediction":prediction})
     saver.save(sess,"checkpoint/here.ckpt")
     #tf.saved_model.simple_save(sess,"model/",inputs={"X":X},outputs={"prediction":prediction})
     

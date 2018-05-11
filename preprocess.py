@@ -7,6 +7,14 @@ import numpy as np
 
 if not os.path.exists(os.path.dirname(r"final/")):
     os.makedirs(os.path.dirname(r"final/"))
+if not os.path.exists(os.path.dirname(r"final/in/")):
+    os.makedirs(os.path.dirname(r"final/in/"))
+if not os.path.exists(os.path.dirname(r"final/out/")):
+    os.makedirs(os.path.dirname(r"final/out/"))
+if not os.path.exists(os.path.dirname(r"final/out/")):
+    os.makedirs(os.path.dirname(r"final/out/"))
+if not os.path.exists(os.path.dirname(r"final/test/")):
+    os.makedirs(os.path.dirname(r"final/test/"))
 users=[]
 
 for filename in os.listdir('data/'):
