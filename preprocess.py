@@ -23,8 +23,8 @@ users=sorted(np.unique(users))
 #print(users)
 #print(users.index('admin'))
 filei=1
-pfi=open("final/in/pp_in_"+str(filei)+".txt","a")
-pfo=open("final/out/pp_out_"+str(filei)+".txt","a")
+#pfi=open("final/in/pp_in_"+str(filei)+".txt","a")
+#pfo=open("final/out/pp_out_"+str(filei)+".txt","a")
 pfu=open("final/users.txt","a")
 pfu.write(str(users))
 
@@ -59,23 +59,27 @@ for filename in os.listdir('data/'):
         finalOut.append(outS)
         count+=1
         if count==1024:
-            pfi.write(str(finalIn))
-            pfo.write(str(finalOut))
+            np.save("final/in/pp_in_"+str(filei),finalIn)
+            np.save("final/out/pp_out_"+str(filei),finalOut)
+            #pfi.write(str(finalIn))
+            #pfo.write(str(finalOut))
             count=0
             finalIn=[]
             finalOut=[]
-            pfi.close()
-            pfo.close()
+            #pfi.close()
+            #pfo.close()
             filei+=1
-            pfi=open("final/in/pp_in_"+str(filei)+".txt","a")
-            pfo=open("final/out/pp_out_"+str(filei)+".txt","a")
+            #pfi=open("final/in/pp_in_"+str(filei)+".txt","a")
+            #pfo=open("final/out/pp_out_"+str(filei)+".txt","a")
 
 
 #print(finalIn)
 #print(finalOut)
 if count!=0:
-    pfi.write(str(finalIn))
-    pfo.write(str(finalOut))
+    np.save("final/in/pp_in_"+str(filei),finalIn)
+    np.save("final/out/pp_out_"+str(filei),finalOut)
+    #pfi.write(str(finalIn))
+    #pfo.write(str(finalOut))
 
 
 
