@@ -3,8 +3,6 @@ import os
 import ast
 import re
 import numpy as np
-
-
 if not os.path.exists(os.path.dirname(r"final/")):
     os.makedirs(os.path.dirname(r"final/"))
 if not os.path.exists(os.path.dirname(r"final/in/")):
@@ -27,14 +25,10 @@ filei=1
 #pfo=open("final/out/pp_out_"+str(filei)+".txt","a")
 pfu=open("final/users.txt","a")
 pfu.write(str(users))
-
 timesteps=250
 finalIn=[]
 finalOut=[]
-
-
 count=0
-
 for filename in os.listdir('data/'):
     #print(filename)
     cOut=''.join(re.split("(_)", filename)[0:-4])
@@ -71,8 +65,6 @@ for filename in os.listdir('data/'):
             filei+=1
             #pfi=open("final/in/pp_in_"+str(filei)+".txt","a")
             #pfo=open("final/out/pp_out_"+str(filei)+".txt","a")
-
-
 #print(finalIn)
 #print(finalOut)
 if count!=0:

@@ -16,23 +16,17 @@ users=ast.literal_eval(f3.readline())
 num_classes = len(users) #output classes
 users=tf.identity(users,name="users")
 
-
-
 #learning_rate = 0.0001
-training_steps = 2
+training_steps = 1000
 display_step = 1
 
 num_input = 19 # number of features
 timesteps = 250 # timesteps
-num_hidden = 50 # cells in hidden layer
-
-
-
-
+num_hidden = 75 # cells in hidden layer
+hidden_layers=2
 
 X=tf.placeholder("float",[None,timesteps,num_input],name='input')
 Y=tf.placeholder("float",[None,num_classes],name='output')
-
 
 weights = {
     'out': tf.Variable(tf.random_normal([num_hidden, num_classes]))
@@ -42,7 +36,7 @@ biases = {
 }
 
 layer = rnn.BasicLSTMCell(num_hidden,forget_bias=1.0)
-cell = rnn.MultiRNNCell([rnn.BasicLSTMCell(num_hidden) for _ in range(1)])
+cell = rnn.MultiRNNCell([rnn.BasicLSTMCell(num_hidden) for _ in range(hidden_layers)])
 #x=tf.unstack(X,axis=1)
 
 output,state=tf.nn.dynamic_rnn(cell,X,dtype=tf.float32)
@@ -82,7 +76,13 @@ with tf.Session() as sess:
             print("Iteration:",j+1,format(iterAcc))
             epocAcc.append(iterAcc)
         epocAcc=np.array(epocAcc)
-        print("\n\n\nEpoch:",i+1,format(sess.run(accuracy, feed_dict={X: tx,Y:ty})),np.mean(epocAcc),"\n")
+        printpred=sess.run(SM_prediction, feed_dict={X: tx})
+        npp=np.array(printpred)
+        print('\n')
+        print(np.mean(npp[0:251,:],axis=0))
+        print(np.mean(npp[251:502,:],axis=0))
+        print(np.mean(npp[502:753,:],axis=0))
+        print("\nEpoch:",i+1,format(sess.run(accuracy, feed_dict={X: tx,Y:ty})),np.mean(epocAcc),"\n\n\n")
         if i%1==0:
             saver.save(sess,"checkpoint/here.ckpt")
             #tf.saved_model.simple_save(sess,"model/",inputs={"X":X},outputs={"prediction":prediction})

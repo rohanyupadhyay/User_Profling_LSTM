@@ -307,7 +307,6 @@ def on_release(key):
         return False
 
 
-
 def recKeybPress():
     # Collect events until released
     with keyboard.Listener(
@@ -315,12 +314,8 @@ def recKeybPress():
             on_release=on_release) as klistener:
         klistener.join()    
 
-
-
-
 def predictModel():
     global iloop
-    #print("running")
     with tf.Session(graph=tf.Graph()) as sess:
         tf.saved_model.loader.load(sess,[tf.saved_model.tag_constants.SERVING],"model/")
         t_X=tf.get_default_graph().get_tensor_by_name('input:0')
@@ -329,22 +324,23 @@ def predictModel():
         f_prediction=tf.nn.softmax(t_prediction)
         users_list=sess.run(t_users)
         for i in range(len(users_list)):
-            users_list[i]=users_list[i].decode('utf-8')
-        #print(tf.get_collection(tf.GraphKeys.key))
-        #print(sess.graph.get_collection('variables'))       
-
+            users_list[i]=users_list[i].decode('utf-8')    
+        outp=[]
         while iloop:
             if len(cData[0])>=250:
                 tempcData=[]
                 tempcData.append([])
                 for i in range(len(range(250))):
                     tempcData[0].append(cData[0][i])
-                print(users_list)
-                print(sess.run(f_prediction,feed_dict={t_X:tempcData}))
-                print()
+                #print(users_list)
+                outp.append(sess.run(f_prediction,feed_dict={t_X:tempcData}))
                 cData[0].pop(0)
-
-
+            if len(outp)>=1000:
+                npoutp=np.array(outp)
+                npm=np.mean(npoutp[0:1000,:],axis=0)
+                print(npm)
+                print(users_list[npm.argmax()])
+                outp.pop(0)
 t0=threading.Thread(target=recMousList,args=())
 t1=threading.Thread(target=recKeybPress,args=())
 t2=threading.Thread(target=predictModel,args=())
@@ -357,34 +353,3 @@ Thread.join(t0)
 Thread.join(t1)
 Thread.join(t2)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    
-
-
-
-
-
-
-    
-    
-
-    

@@ -1,5 +1,5 @@
 import os
-import win32gui
+#import win32gui
 import threading
 from threading import Timer
 from threading import Thread
@@ -10,7 +10,6 @@ from pynput.keyboard import Key
 from pynput import keyboard
 import math
 import time
-
 #os.system("tasklist")   
 #print(win32gui.GetDoubleClickTime())
 i=1
@@ -25,7 +24,6 @@ ltime=0
 mData={}
 tempData={}
 mData['user']=os.environ['USERNAME']
-
 mData['charc']=0
 mData['lClick']=0
 mData['rClick']=0
@@ -86,8 +84,6 @@ def on_click(x, y, button, pressed):
     if iloop==0:
         return False
 
-
-
 def on_scroll(x, y, dx, dy):
     global stime
     global iloop
@@ -130,9 +126,6 @@ def on_move(x,y):
     if iloop==0:
         return False
 
-
-
-
 def recMousList():
     global mlistener
     # Collect events until released
@@ -141,7 +134,6 @@ def recMousList():
             on_scroll=on_scroll,
             on_move=on_move) as mlistener:
         mlistener.join()
-
 
 def recMousPos():
     global iloop
@@ -162,7 +154,6 @@ def recMousPos():
             f.write("\n")
         
     return False
-
 
 def on_press(key):
     global stime
@@ -245,8 +236,6 @@ def on_press(key):
                 print(mData['enter'])
                 f.write(str(mData))
                 f.write("\n")
-    
-        
 
 def on_release(key):
     global iloop
@@ -329,8 +318,6 @@ def on_release(key):
         iloop=0
         return False
 
-
-
 def recKeybPress():
     # Collect events until released
     with keyboard.Listener(
@@ -338,15 +325,12 @@ def recKeybPress():
             on_release=on_release) as klistener:
         klistener.join()    
 
-
 t0=threading.Thread(target=recMousList,args=())
 t1=threading.Thread(target=recKeybPress,args=())
 #t2=threading.Thread(target=recMousPos,args=())
 t0.start()
 t1.start()
 #t2.start()
-
-
 Thread.join(t0)
 Thread.join(t1)
 #Thread.join(t2)
