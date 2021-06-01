@@ -6,7 +6,7 @@ This program will moniter the user on a windows system and try to identify and v
 
 Steps:
 
-1. Collect computer usage data pf different users by running the 'data_collect.py' file. The user data wil be saved in the 'data' folder. Pressing escape key stops data collection.
+1. Collect computer usage data of different users by running the 'data_collect.py' file. The user data wil be saved in the 'data' folder. Pressing escape key stops data collection.
 2. Collect the users data from different users and copy and paste all the data into the 'data' folder. (Leave some data out for testing set.)
 3. After putting all the users' (training) data into the data folder, run the preprocess.py to preprocess the data. Multiple input and output files will be created in 'final/in' and 'final/out' folders.
 4. Now preprocess thes testing data by just keeping the testing data in the 'data' folder and run 'preprocess.py'. Make sure that the 'final/in' and 'final/out' folders are empty before running preprocess.py otherwise all the data will be appended to the previous training data (Just temporarily copy your previous folder to some other place before running 'preprocess.py'). Rename the new proprocessed testing data input and output files to 'pp_in.txt' and 'pp_out.txt' and put these testing files in the 'final/test' folder.
